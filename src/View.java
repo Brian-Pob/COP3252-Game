@@ -18,6 +18,8 @@ public class View extends JFrame{
         frame.getContentPane().setBackground(VERY_DARK_GREEN);
         frame.getContentPane().add(BorderLayout.NORTH, panel);
         frame.setVisible(true);
+
+        // Brian added a comment
     }
 
 
