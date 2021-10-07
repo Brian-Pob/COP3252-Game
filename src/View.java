@@ -1,9 +1,9 @@
 import javax.swing.*;
 import java.awt.*;
 
-public class GUI extends JFrame{
+public class View extends JFrame{
     public static final Color VERY_DARK_GREEN = new Color(0, 102, 0);
-    public static void main(String[] args) {
+    public void newGame() {
         JFrame frame = new JFrame("Klondike Solitaire");
         frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
         frame.setSize(2000,1000);
@@ -19,4 +19,6 @@ public class GUI extends JFrame{
         frame.getContentPane().add(BorderLayout.NORTH, panel);
         frame.setVisible(true);
     }
+
+
 }
