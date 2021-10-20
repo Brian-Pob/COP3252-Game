@@ -48,4 +48,5 @@ public class Card {
         this.faceUp = !this.faceUp;
     }
 
+    public ImageIcon getCardImage() {return cardImage;}
 }
