@@ -45,7 +45,7 @@ public class Card {
     }
 
     public void flip() {
-        this.faceUp = true;
+        this.faceUp = !this.faceUp;
     }
 
 }
