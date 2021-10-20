@@ -3,7 +3,7 @@ import java.awt.*;
 
 public class View extends JFrame{
     public static final Color VERY_DARK_GREEN = new Color(0, 102, 0);
-    public void newGame() {
+    public void initializeGame() {
         JFrame frame = new JFrame("Klondike Solitaire");
         frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
         frame.setSize(2000,1000);
