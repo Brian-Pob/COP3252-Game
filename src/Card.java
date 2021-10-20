@@ -1,17 +1,19 @@
+import javax.swing.*;
+
 public class Card {
     private EnumColor cardColor;
     private EnumSuit cardSuit;
     private EnumRank cardRank;
-    //private Image cardImage;
+    private ImageIcon cardImage;
     private boolean faceUp;
 
 
-    public Card(EnumColor cardColor, EnumSuit cardSuit, EnumRank cardRank /*, ImageIcon cardImage*/) {
+    public Card(EnumColor cardColor, EnumSuit cardSuit, EnumRank cardRank , String cardImage) {
         this.cardColor = cardColor;
         this.cardSuit = cardSuit;
         this.cardRank = cardRank;
         this.faceUp = false;
-        //this.cardImage = cardImage;
+        this.cardImage = new ImageIcon(cardImage);
     }
 
     public EnumColor getCardColor() {

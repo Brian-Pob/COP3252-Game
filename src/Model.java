@@ -1,6 +1,4 @@
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Stack;
+import java.util.*;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
@@ -11,34 +9,64 @@ public class Model {
 
 
     public Model() {
+        // create the game
+
         foundation = new Stack[4];
+        for (int i = 0; i < foundation.length; i++) {
+            foundation[i] = new Stack<>();
+        }
+
         tableau = new Stack[7];
+        for (int i = 0; i < tableau.length; i++) {
+            tableau[i] = new Stack<>();
+        }
+
         drawPile = new Stack<>();
         discardPile = new Stack<>();
         masterList = new ArrayList<>();
 
-        // create the game
+
 
 
     }
     public void initializeGame(){
-        // get EnumSuit content as list of strings
-        List<String> suitNames = Stream.of(EnumSuit.values()).map(EnumSuit::name).collect(Collectors.toList());
-        List<String> rankNames = Stream.of(EnumRank.values()).map(EnumRank::name).collect(Collectors.toList());
-        List<String> colorNames = Stream.of(EnumColor.values()).map(EnumColor::name).collect(Collectors.toList());
+        // create cards
 
-        for (String name: suitNames
-        ) {
-            System.out.println(name);
+        List<EnumSuit> suitList = List.of(EnumSuit.values());
+        List<EnumRank> rankList = List.of(EnumRank.values());
+        List<EnumColor> colorList = List.of(EnumColor.values());
+
+
+        for (EnumSuit suit: suitList) {
+            for (EnumRank rank: rankList) {
+                String filename = rank.toString().toLowerCase(Locale.ROOT) + "_of_" + suit.toString().toLowerCase(Locale.ROOT) + ".png";
+                Card tempCard;
+
+                if(suit == EnumSuit.SPADES || suit == EnumSuit.CLUBS)
+                    tempCard = new Card(EnumColor.BLACK, suit, rank, filename);
+                else
+                    tempCard = new Card(EnumColor.RED, suit, rank, filename);
+
+                masterList.add(tempCard);
+            }
         }
-        for (String name: rankNames
-             ) {
-            System.out.println(name);
+
+        Collections.shuffle(masterList);
+
+        // initialize tableau
+        int k = 0;
+        for (int i = 0; i < 7; i++) {
+            for (int j = 0; j < i+1; j++) {
+                tableau[i].push(masterList.get(k));
+                k++;
+            }
         }
-        for (String name: colorNames
-             ) {
-            System.out.println(name);
+
+        for (int i = k; i < masterList.size(); i++) {
+            drawPile.push(masterList.get(i));
         }
+
+
     }
     public Stack<Card>[] getFoundation() {
         return foundation;
