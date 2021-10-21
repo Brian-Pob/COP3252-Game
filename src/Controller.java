@@ -11,4 +11,8 @@ public class Controller {
         view.initializeGame();
         model.initializeGame();
     }
+
+    public void testCount(){
+        model.testCount();
+    }
 }

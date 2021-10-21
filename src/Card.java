@@ -13,7 +13,7 @@ public class Card {
         this.cardSuit = cardSuit;
         this.cardRank = cardRank;
         this.faceUp = false;
-        this.cardImage = new ImageIcon(cardImage);
+        this.cardImage = new ImageIcon(getClass().getResource("/cards/" + cardImage));
     }
 
     public EnumColor getCardColor() {

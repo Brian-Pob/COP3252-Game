@@ -5,5 +5,6 @@ public class Driver {
         Controller gameController = new Controller(gameModel, gameView);
 
         gameController.initializeGame();
+        gameController.testCount();
     }
 }

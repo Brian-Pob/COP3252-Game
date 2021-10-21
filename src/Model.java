@@ -65,9 +65,17 @@ public class Model {
         for (int i = k; i < masterList.size(); i++) {
             drawPile.push(masterList.get(i));
         }
-
-
     }
+
+    public void testCount(){
+        System.out.println("drawpile has " + drawPile.size() + " cards.");
+        System.out.println("discard pile has " + discardPile.size() + " cards.");
+        for (Stack s: tableau) {
+            System.out.println("Stack size:" + s.size());
+        }
+    }
+
+
     public Stack<Card>[] getFoundation() {
         return foundation;
     }
