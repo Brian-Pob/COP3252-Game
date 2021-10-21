@@ -8,8 +8,8 @@ public class Controller {
     }
 
     public void initializeGame(){
-        view.initializeGame();
         model.initializeGame();
+        view.initializeGame();
     }
 
     public void testCount(){
