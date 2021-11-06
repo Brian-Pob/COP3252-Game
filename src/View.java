@@ -1,4 +1,5 @@
 import javax.imageio.ImageIO;
+import javax.imageio.stream.ImageInputStream;
 import javax.swing.*;
 import java.awt.*;
 import java.awt.event.MouseEvent;
@@ -7,13 +8,21 @@ import java.io.File;
 import java.io.FileFilter;
 import java.io.IOException;
 import java.awt.event.MouseAdapter;
+import java.util.List;
 
 
 public class View extends JFrame{
     public static final Color VERY_DARK_GREEN = new Color(0, 102, 0);
+    private final Model gameModel;
+
+    public View(Model gameModel) {
+        this.gameModel = gameModel;
+//        initializeGame();
+    }
+
     public void initializeGame() {
         JFrame frame = new JFrame("Klondike Solitaire");
-        TestPane tp = new TestPane();
+        TestPane tp = new TestPane(gameModel);
 
         frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
         frame.setSize(2000,1000);
@@ -33,46 +42,33 @@ public class View extends JFrame{
 
         // Brian added a comment
     }
-
-
 }
 
 class TestPane extends JLayeredPane {
-    public TestPane() {
-        File[] images = new File("/Users/kennysu/IdeaProjects/asd/src/cards").listFiles(new FileFilter() {
-            @Override
-            public boolean accept(File pathname) {
-                String name = pathname.getName().toLowerCase();
-                return name.endsWith(".png") ||
-                        name.endsWith(".jpg") ||
-                        name.endsWith(".bmp") ||
-                        name.endsWith(".gif");
-            }
-        });
-
-        int x = 0;
-        int y = 0;
-        for (File imgFile : images) {
+    public TestPane(Model gameModel) {
+//        System.out.println("Working Directory = " + System.getProperty("user.dir"));
+        List<Card> tempCardList = gameModel.getMasterList();
+        int x = 0, y = 0;
+        for (Card card : tempCardList) {
+            System.out.println(card);
 
             try {
-                BufferedImage img = ImageIO.read(imgFile);
-                BufferedImage resized = resize(img, 150, 217);
-
-                JLabel label = new JLabel(new ImageIcon(resized));
+                ImageIcon imageIcon = card.getCardImage();
+                Image image = imageIcon.getImage();
+                Image newimg = image.getScaledInstance(150, 217, java.awt.Image.SCALE_SMOOTH);
+                imageIcon = new ImageIcon(newimg);
+                JLabel label = new JLabel(imageIcon);
                 label.setSize(label.getPreferredSize());
                 label.setLocation(x, y);
                 MouseHandler mh  = new MouseHandler();
                 label.addMouseListener(mh);
                 label.addMouseMotionListener(mh);
                 add(label);
-                x += 0;
-                y += 0;
-            } catch (IOException exp) {
+                y += 150;
+            } catch (Exception exp) {
                 exp.printStackTrace();
             }
-
         }
-
     }
 
     private BufferedImage resize(BufferedImage img, int width, int height) {
@@ -110,7 +106,5 @@ class TestPane extends JLayeredPane {
             location.y += y;
             component.setLocation(location);
         }
-
     }
-
 }

@@ -39,13 +39,13 @@ public class Model {
 
         for (EnumSuit suit: suitList) {
             for (EnumRank rank: rankList) {
-                String filename = rank.toString().toLowerCase(Locale.ROOT) + "_of_" + suit.toString().toLowerCase(Locale.ROOT) + ".png";
+                String imagePath = rank.toString().toLowerCase(Locale.ROOT) + "_of_" + suit.toString().toLowerCase(Locale.ROOT) + ".png";
                 Card tempCard;
 
                 if(suit == EnumSuit.SPADES || suit == EnumSuit.CLUBS)
-                    tempCard = new Card(EnumColor.BLACK, suit, rank, filename);
+                    tempCard = new Card(EnumColor.BLACK, suit, rank, imagePath);
                 else
-                    tempCard = new Card(EnumColor.RED, suit, rank, filename);
+                    tempCard = new Card(EnumColor.RED, suit, rank, imagePath);
 
                 masterList.add(tempCard);
             }
@@ -106,5 +106,10 @@ public class Model {
 
     public void setDiscardPile(Stack<Card> discardPile) {
         this.discardPile = discardPile;
+    }
+
+
+    public List<Card> getMasterList() {
+        return masterList;
     }
 }
