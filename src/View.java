@@ -32,15 +32,32 @@ public class View extends JFrame{
         JPanel panel = new JPanel();
         JButton newGame = new JButton("New Game");
         JButton undo = new JButton("Undo");
+        JButton[] tableau = new JButton[7];
+
         panel.add(newGame); // Components Added using Flow Layout
         panel.add(undo);
-
+        int x = 50;
+        int y = 300;
+        for (JButton jButton : tableau) {
+            jButton = new JButton("Button");
+            jButton.setSize(175, 500);
+            jButton.setOpaque(false);
+            jButton.setContentAreaFilled(false);
+            jButton.setBorderPainted(false);
+            frame.getContentPane().add(jButton);
+            jButton.setLocation(x, y);
+            jButton.setCursor(Cursor.getPredefinedCursor(Cursor.HAND_CURSOR));
+            x += 200;
+        }
 
         // Text Area at the Center
         frame.getContentPane().setBackground(VERY_DARK_GREEN);
         frame.getContentPane().add(BorderLayout.NORTH, panel);
+
         frame.add(tp);
         frame.setVisible(true);
+        frame.setResizable(false);
+
 
         // Brian added a comment
     }
@@ -50,63 +67,73 @@ class TestPane extends JLayeredPane {
     public TestPane(Model gameModel) {
 //        System.out.println("Working Directory = " + System.getProperty("user.dir"));
         List<Card> tempCardList = gameModel.getMasterList();
-        int x = 0, y = 0;
-        for (Card card : tempCardList) {
-            System.out.println(card);
-
+        int x = 20, y = 1000;
+//        for (Card card : tempCardList) {
+//            System.out.println(card);
+//            try {
+//                ImageIcon imageIcon = card.getCardImage();
+//                Image image = imageIcon.getImage();
+//                Image newimg = image.getScaledInstance(150, 217, java.awt.Image.SCALE_SMOOTH);
+//                imageIcon = new ImageIcon(newimg);
+//                JLabel label = new JLabel(imageIcon);
+//                label.setSize(label.getPreferredSize());
+//                label.setLocation(x, y);
+//                MouseHandler mh  = new MouseHandler();
+//                label.addMouseListener(mh);
+//                label.addMouseMotionListener(mh);
+//                add(label);
+//                x += 10;
+//            } catch (Exception exp) {
+//                exp.printStackTrace();
+//            }
+//        }
+        for (int i = 0; i < tempCardList.size(); i++) {
+            System.out.println(tempCardList.get(i));
             try {
-                ImageIcon imageIcon = card.getCardImage();
+                ImageIcon imageIcon = tempCardList.get(i).getCardImage();
                 Image image = imageIcon.getImage();
                 Image newimg = image.getScaledInstance(150, 217, java.awt.Image.SCALE_SMOOTH);
                 imageIcon = new ImageIcon(newimg);
                 JLabel label = new JLabel(imageIcon);
                 label.setSize(label.getPreferredSize());
                 label.setLocation(x, y);
-                MouseHandler mh  = new MouseHandler();
-                label.addMouseListener(mh);
-                label.addMouseMotionListener(mh);
+//                MouseHandler mh  = new MouseHandler();
+//                label.addMouseListener(mh);
+//                label.addMouseMotionListener(mh);
                 add(label);
-                y += 150;
+                y -= 25;
             } catch (Exception exp) {
                 exp.printStackTrace();
             }
         }
     }
 
-    private BufferedImage resize(BufferedImage img, int width, int height) {
-        Image tmp = img.getScaledInstance(width, height, Image.SCALE_SMOOTH);
-        BufferedImage resized = new BufferedImage(width, height, BufferedImage.TYPE_INT_ARGB);
-        Graphics2D g2d = resized.createGraphics();
-        g2d.drawImage(tmp, 0, 0, null);
-        g2d.dispose();
-        return resized;
-    }
 
     @Override
     public Dimension getPreferredSize() {
         return new Dimension(300, 300);
     }
 
-    public class MouseHandler extends MouseAdapter {
-
-        private Point offset;
-
-        @Override
-        public void mousePressed(MouseEvent e) {
-            JLabel label = (JLabel) e.getComponent();
-            moveToFront(label);
-            offset = e.getPoint();
-        }
-
-        @Override
-        public void mouseDragged(MouseEvent e) {
-            int x = e.getPoint().x - offset.x;
-            int y = e.getPoint().y - offset.y;
-            Component component = e.getComponent();
-            Point location = component.getLocation();
-            location.x += x;
-            location.y += y;
-            component.setLocation(location);
-        }
-    }
+//    public class MouseHandler extends MouseAdapter {
+//
+//        private Point offset;
+//
+//        @Override
+//        public void mousePressed(MouseEvent e) {
+//            JLabel label = (JLabel) e.getComponent();
+//            moveToFront(label);
+//            offset = e.getPoint();
+//        }
+//
+//        @Override
+//        public void mouseDragged(MouseEvent e) {
+//            int x = e.getPoint().x - offset.x;
+//            int y = e.getPoint().y - offset.y;
+//            Component component = e.getComponent();
+//            Point location = component.getLocation();
+//            location.x += x;
+//            location.y += y;
+//            component.setLocation(location);
+//        }
+//    }
 }
