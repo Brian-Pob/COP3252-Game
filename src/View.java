@@ -25,7 +25,9 @@ public class View extends JFrame{
         TestPane tp = new TestPane(gameModel);
 
         frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-        frame.setSize(2000,1000);
+//        frame.setExtendedState(JFrame.MAXIMIZED_BOTH); // uncomment to make the window fullscreen
+        frame.setSize(1500, 900);
+        frame.setResizable(false);
 
         JPanel panel = new JPanel();
         JButton newGame = new JButton("New Game");

@@ -1,6 +1,4 @@
 import java.util.*;
-import java.util.stream.Collectors;
-import java.util.stream.Stream;
 
 public class Model {
      private Stack<Card> [] foundation, tableau;
@@ -60,8 +58,10 @@ public class Model {
                 tableau[i].push(masterList.get(k));
                 k++;
             }
+            tableau[i].peek().flip(); // setting the top card face up
         }
 
+        // initialize draw pile with the remaining cards
         for (int i = k; i < masterList.size(); i++) {
             drawPile.push(masterList.get(i));
         }
@@ -70,18 +70,52 @@ public class Model {
     public void testCount(){
         System.out.println("drawpile has " + drawPile.size() + " cards.");
         System.out.println("discard pile has " + discardPile.size() + " cards.");
-        for (Stack s: tableau) {
+        for (Stack<Card> s: tableau) {
+            System.out.println();
             System.out.println("Stack size:" + s.size());
+            System.out.println("Stack top:" + s.peek());
+            System.out.println("Stack top flipped:" + s.peek().isFaceUp());
+            for (Card c: s) {
+                System.out.println(c + " " + c.isFaceUp());
+            }
         }
     }
 
+    public boolean isValidTableauMove(int tableauIndex, Card card){
+        if(tableauIndex < 0 || tableauIndex > 6)
+            return false;
+        if(tableau[tableauIndex].isEmpty())
+            return card.getCardRank() == EnumRank.KING;
+        Card topCard = tableau[tableauIndex].peek();
+        return (topCard.getCardColor() != card.getCardColor()) && (topCard.getCardRank().getRankValue() - 1 == card.getCardRank().getRankValue());
+    }
+
+    public boolean isValidFoundationMove(int foundationIndex, Card card){
+        if(foundationIndex < 0 || foundationIndex > 3)
+            return false;
+        if(foundation[foundationIndex].isEmpty())
+            return card.getCardRank() == EnumRank.ACE;
+        Card topCard = foundation[foundationIndex].peek();
+        return (topCard.getCardColor() != card.getCardColor()) && (topCard.getCardRank().getRankValue() == card.getCardRank().getRankValue() - 1);
+    }
+
+    public Card drawCard(){ // when drawpile is clicked and is not empty, draw card
+        Card tempCard = drawPile.pop();
+        tempCard.setFaceUp(true);
+        discardPile.push(tempCard);
+        return tempCard;
+    }
+
+    public void resetDrawPile(){ // when drawpile is clocked and is empty, reset drawpile
+        for (int i = 0; i < discardPile.size(); i++) {
+            drawPile.push(discardPile.pop()); // moves all cards from discard pile to draw pile
+            drawPile.peek().setFaceUp(false); // sets the top card of the draw pile face down
+                                              // will eventually set all cards face down
+        }
+    }
 
     public Stack<Card>[] getFoundation() {
         return foundation;
-    }
-
-    public void setFoundation(Stack<Card>[] foundation) {
-        this.foundation = foundation;
     }
 
     public Stack<Card>[] getTableau() {
