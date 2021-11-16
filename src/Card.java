@@ -53,6 +53,10 @@ public class Card {
         this.faceUp = !this.faceUp;
     }
 
+    public boolean setFaceUp(boolean faceUp) {
+        return this.faceUp = faceUp;
+    }
+
     public ImageIcon getCardImage() {return cardImage;}
 
     public boolean canPlaceOnTop(Card card) {
