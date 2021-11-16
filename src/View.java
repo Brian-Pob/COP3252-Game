@@ -58,7 +58,14 @@ public class View extends JFrame{
         frame.setVisible(true);
         frame.setResizable(false);
 
+        for (int i = 0; i < gameModel.getTableau().length; i++) { // length of list of stacks
+            System.out.println("Stack " + Integer.toString(i));
+            for (int j = 0; j < gameModel.getTableau()[i].size(); j++) { // iterates through the stack
 
+                System.out.println(gameModel.getTableau()[i].get(j) + " " + gameModel.getTableau()[i].get(j).isFaceUp());
+                // put card behind the button
+            }
+        }
         // Brian added a comment
     }
 }
@@ -88,7 +95,7 @@ class TestPane extends JLayeredPane {
 //            }
 //        }
         for (int i = 0; i < tempCardList.size(); i++) {
-            System.out.println(tempCardList.get(i));
+//            System.out.println(tempCardList.get(i));
             try {
                 ImageIcon imageIcon = tempCardList.get(i).getCardImage();
                 Image image = imageIcon.getImage();
@@ -113,27 +120,4 @@ class TestPane extends JLayeredPane {
     public Dimension getPreferredSize() {
         return new Dimension(300, 300);
     }
-
-//    public class MouseHandler extends MouseAdapter {
-//
-//        private Point offset;
-//
-//        @Override
-//        public void mousePressed(MouseEvent e) {
-//            JLabel label = (JLabel) e.getComponent();
-//            moveToFront(label);
-//            offset = e.getPoint();
-//        }
-//
-//        @Override
-//        public void mouseDragged(MouseEvent e) {
-//            int x = e.getPoint().x - offset.x;
-//            int y = e.getPoint().y - offset.y;
-//            Component component = e.getComponent();
-//            Point location = component.getLocation();
-//            location.x += x;
-//            location.y += y;
-//            component.setLocation(location);
-//        }
-//    }
 }

@@ -81,13 +81,27 @@ public class Model {
         }
     }
 
-    public boolean isValidTableauMove(int tableauIndex, Card card){
+    public boolean isValidTableauMove(int tableauIndex, Card card){ // for single card
         if(tableauIndex < 0 || tableauIndex > 6)
             return false;
         if(tableau[tableauIndex].isEmpty())
             return card.getCardRank() == EnumRank.KING;
         Card topCard = tableau[tableauIndex].peek();
         return (topCard.getCardColor() != card.getCardColor()) && (topCard.getCardRank().getRankValue() - 1 == card.getCardRank().getRankValue());
+    }
+
+    // View should pass in the index of the tableau and all the face up cards in that stack
+    public int isValidTableauStackMove(int tableauIndex, Stack<Card> cards){
+        // for multiple cards
+        // return index of the card that is valid
+        // This is to know how many cards to move.
+        for (int i = 0; i < cards.size(); i++) {
+            if(isValidTableauMove(tableauIndex, cards.get(i)))
+                return i;
+        }
+
+        // return -1 if no valid card
+        return -1;
     }
 
     public boolean isValidFoundationMove(int foundationIndex, Card card){
