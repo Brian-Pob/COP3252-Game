@@ -10,6 +10,7 @@ import java.io.FileFilter;
 import java.io.IOException;
 import java.awt.event.MouseAdapter;
 import java.util.List;
+import java.util.Objects;
 
 
 public class View extends JFrame{
@@ -27,7 +28,7 @@ public class View extends JFrame{
 
         frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 //        frame.setExtendedState(JFrame.MAXIMIZED_BOTH); // uncomment to make the window fullscreen
-        frame.setSize(1500, 900);
+        frame.setSize(1440, 850);
         frame.setResizable(false);
 
         JPanel panel = new JPanel();
@@ -65,7 +66,7 @@ public class View extends JFrame{
             frame.getContentPane().add(jButton);
             jButton.setLocation(x, y);
             jButton.setCursor(Cursor.getPredefinedCursor(Cursor.HAND_CURSOR));
-            x += 200;
+            x += 202;
         }
         int xFoundation = 25;
         int yFoundation = 75;
@@ -111,7 +112,10 @@ class TestPane extends JLayeredPane {
             for (int j = gameModel.getDrawPile().size() - 1 ; j >= 0; j--) { // iterates through the stack
                 System.out.println(gameModel.getDrawPile().get(j) + " " + gameModel.getDrawPile().get(j).isFaceUp());
                 try {
-                    ImageIcon imageIcon = gameModel.getDrawPile().get(j).getCardImage();
+                    ImageIcon imageIcon = new ImageIcon(Objects.requireNonNull(this.getClass().getResource("back.png")));
+                    if (gameModel.getDrawPile().get(j).isFaceUp()) {
+                        imageIcon = gameModel.getDrawPile().get(j).getCardImage();
+                    }
                     Image image = imageIcon.getImage();
                     Image newimg = image.getScaledInstance(100, 150, Image.SCALE_SMOOTH);
                     imageIcon = new ImageIcon(newimg);
@@ -119,7 +123,7 @@ class TestPane extends JLayeredPane {
                     label.setSize(label.getPreferredSize());
                     label.setLocation(x, y);
                     add(label);
-                    x += xOffset;
+//                    x += xOffset;
                 } catch (Exception exp) {
                     exp.printStackTrace();
                 }
@@ -138,7 +142,10 @@ class TestPane extends JLayeredPane {
 //            for (int j = 0; j < gameModel.getTableau()[i].size(); j++) {
                 System.out.println(gameModel.getTableau()[i].get(j) + " " + gameModel.getTableau()[i].get(j).isFaceUp());
                 try {
-                    ImageIcon imageIcon = gameModel.getTableau()[i].get(j).getCardImage();
+                    ImageIcon imageIcon = new ImageIcon(Objects.requireNonNull(this.getClass().getResource("back.png")));
+                    if (gameModel.getTableau()[i].get(j).isFaceUp()) {
+                        imageIcon = gameModel.getTableau()[i].get(j).getCardImage();
+                    }
                     Image image = imageIcon.getImage();
                     Image newimg = image.getScaledInstance(100, 150, java.awt.Image.SCALE_SMOOTH);
                     imageIcon = new ImageIcon(newimg);
