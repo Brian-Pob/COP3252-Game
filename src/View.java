@@ -1,16 +1,7 @@
-import javax.imageio.ImageIO;
-import javax.imageio.stream.ImageInputStream;
 import javax.swing.*;
-import javax.swing.border.BevelBorder;
 import java.awt.*;
-import java.awt.event.MouseEvent;
-import java.awt.image.BufferedImage;
-import java.io.File;
-import java.io.FileFilter;
-import java.io.IOException;
-import java.awt.event.MouseAdapter;
-import java.util.List;
 import java.util.Objects;
+import java.util.Stack;
 
 
 public class View extends JFrame{
@@ -19,7 +10,6 @@ public class View extends JFrame{
 
     public View(Model gameModel) {
         this.gameModel = gameModel;
-//        initializeGame();
     }
 
     public void initializeGame() {
@@ -27,8 +17,8 @@ public class View extends JFrame{
         TestPane tp = new TestPane(gameModel);
 
         frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-//        frame.setExtendedState(JFrame.MAXIMIZED_BOTH); // uncomment to make the window fullscreen
-        frame.setSize(1440, 850);
+        frame.setExtendedState(JFrame.MAXIMIZED_BOTH); // uncomment to make the window fullscreen
+//        frame.setSize(1440, 850);
         frame.setResizable(false);
 
         JPanel panel = new JPanel();
@@ -38,7 +28,10 @@ public class View extends JFrame{
         panel.add(newGame); // Components Added using Flow Layout
         panel.add(undo);
 
-        createButtons(frame);
+        createButtons(gameModel, frame, 25, 275, 202, 175, 500, 7, 't'); //create tableau buttons
+        createButtons(gameModel, frame, 25, 75, 150, 150, 200, 4, 'f'); //create foundation buttons
+        createButtons(gameModel, frame, 1100, 75, 150, 150, 200, 1, 'i'); //create draw/discard buttons
+        createButtons(gameModel, frame, 1250, 75, 150, 150, 200, 1, 'd'); //create draw/discard buttons
 
         // Text Area at the Center
         frame.getContentPane().setBackground(VERY_DARK_GREEN);
@@ -48,51 +41,53 @@ public class View extends JFrame{
         frame.setVisible(true);
         frame.setResizable(false);
 
-        // Brian added a comment
     }
 
-    void createButtons(JFrame frame) {
-        JButton[] tableau = new JButton[7];
-        JButton[] foundation = new JButton[4];
-        JButton[] dd = new JButton[2];
-        int x = 25;
-        int y = 275;
-        for (JButton jButton : tableau) {
+    void createButtons(Model gameModel ,JFrame frame, int x, int y, int xOffset, int width, int height, int numOfBtns, char btnType) {
+        JButton[] btns = new JButton[numOfBtns];
+        for (JButton jButton : btns) {
             jButton = new JButton("Button");
-            jButton.setSize(175, 500);
+            switch (btnType) {
+                case 'd':
+                    jButton.addActionListener(e -> {
+                        gameModel.drawCard();
+                        JLayeredPane lpane = getLayeredPane();
+                        Stack<Card> tempDiscardPile = gameModel.getDiscardPile();
+                        int yStarttemp = 65, xStarttemp = 1125;
+                        for (int j = tempDiscardPile.size() - 1, k = 0; j >= 0 && k <= tempDiscardPile.size() - 1 ; j--, k++) { // iterates through the stack
+                            System.out.println(tempDiscardPile.get(j) + " " + tempDiscardPile.get(j).isFaceUp());
+                            try {
+                                System.out.println("Inside try");
+                                ImageIcon imageIcon = tempDiscardPile.get(j).getCardImage();
+                                Image image = imageIcon.getImage();
+                                Image newimg = image.getScaledInstance(100, 150, Image.SCALE_SMOOTH);
+                                imageIcon = new ImageIcon(newimg);
+                                JLabel label = new JLabel(imageIcon);
+                                label.setSize(label.getPreferredSize());
+                                label.setLocation(xStarttemp, yStarttemp);
+                                lpane.add(label, k);
+                                lpane.setVisible(true);
+                                frame.getContentPane().add(lpane);
+                                frame.setVisible(true);
+                            } catch (Exception exp) {
+                                exp.printStackTrace();
+                            }
+                        }
+                    });
+                    break;
+                case 'f':
+                    break;
+                case 't':
+                    break;
+            }
+            jButton.setSize(width, height);
             jButton.setOpaque(false);
             jButton.setContentAreaFilled(false);
             jButton.setBorderPainted(false);
             frame.getContentPane().add(jButton);
             jButton.setLocation(x, y);
             jButton.setCursor(Cursor.getPredefinedCursor(Cursor.HAND_CURSOR));
-            x += 202;
-        }
-        int xFoundation = 25;
-        int yFoundation = 75;
-        for (JButton jButton : foundation) {
-            jButton = new JButton("Button");
-            jButton.setSize(150, 200);
-            jButton.setOpaque(false);
-            jButton.setContentAreaFilled(false);
-            jButton.setBorderPainted(false);
-            frame.getContentPane().add(jButton);
-            jButton.setLocation(xFoundation, yFoundation);
-            jButton.setCursor(Cursor.getPredefinedCursor(Cursor.HAND_CURSOR));
-            xFoundation += 150;
-        }
-        int ddx = 1100;
-        int ddy = 75;
-        for (JButton jButton : dd) {
-            jButton = new JButton("Button");
-            jButton.setSize(150, 200);
-            jButton.setOpaque(false);
-            jButton.setContentAreaFilled(false);
-            jButton.setBorderPainted(false);
-            frame.getContentPane().add(jButton);
-            jButton.setLocation(ddx, ddy);
-            jButton.setCursor(Cursor.getPredefinedCursor(Cursor.HAND_CURSOR));
-            ddx += 150;
+            x += xOffset;
         }
     }
 }

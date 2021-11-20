@@ -152,6 +152,8 @@ public class Model {
         return discardPile;
     }
 
+    public Card getDiscardPileTop() { return discardPile.peek();}
+
     public void setDiscardPile(Stack<Card> discardPile) {
         this.discardPile = discardPile;
     }
