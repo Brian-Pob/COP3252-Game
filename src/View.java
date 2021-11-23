@@ -24,9 +24,24 @@ public class View extends JFrame{
         JPanel panel = new JPanel();
         JButton newGame = new JButton("New Game");
         JButton undo = new JButton("Undo");
+        JButton drawCard = new JButton("Draw Card");
+        drawCard.addActionListener(e -> {
+            gameModel.drawCard();
+            System.out.println("\nDiscard Pile");
+            for (Card c: gameModel.getDiscardPile()) {
+                System.out.println(c);
+            }
+
+            System.out.println("\nDraw Pile");
+            for (Card c: gameModel.getDrawPile()) {
+                System.out.println(c);
+            }
+        });
+        JButton[] tableau = new JButton[7];
 
         panel.add(newGame); // Components Added using Flow Layout
         panel.add(undo);
+        panel.add(drawCard);
 
         createButtons(gameModel, frame, 25, 275, 202, 175, 500, 7, 't'); //create tableau buttons
         createButtons(gameModel, frame, 25, 75, 150, 150, 200, 4, 'f'); //create foundation buttons
@@ -50,29 +65,26 @@ public class View extends JFrame{
             switch (btnType) {
                 case 'd':
                     jButton.addActionListener(e -> {
-                        gameModel.drawCard();
+                        Card tempCard = gameModel.drawCard();
                         JLayeredPane lpane = getLayeredPane();
                         Stack<Card> tempDiscardPile = gameModel.getDiscardPile();
                         int yStarttemp = 65, xStarttemp = 1125;
-                        for (int j = tempDiscardPile.size() - 1, k = 0; j >= 0 && k <= tempDiscardPile.size() - 1 ; j--, k++) { // iterates through the stack
-                            System.out.println(tempDiscardPile.get(j) + " " + tempDiscardPile.get(j).isFaceUp());
                             try {
                                 System.out.println("Inside try");
-                                ImageIcon imageIcon = tempDiscardPile.get(j).getCardImage();
+                                ImageIcon imageIcon = tempCard.getCardImage();
                                 Image image = imageIcon.getImage();
                                 Image newimg = image.getScaledInstance(100, 150, Image.SCALE_SMOOTH);
                                 imageIcon = new ImageIcon(newimg);
                                 JLabel label = new JLabel(imageIcon);
                                 label.setSize(label.getPreferredSize());
                                 label.setLocation(xStarttemp, yStarttemp);
-                                lpane.add(label, k);
+                                lpane.add(label, 0);
                                 lpane.setVisible(true);
                                 frame.getContentPane().add(lpane);
                                 frame.setVisible(true);
                             } catch (Exception exp) {
                                 exp.printStackTrace();
                             }
-                        }
                     });
                     break;
                 case 'f':
@@ -157,6 +169,7 @@ class TestPane extends JLayeredPane {
             y = yStart + yOffset * i;
             x += xOffset;
         }
+        // Brian added a comment
     }
 
 
@@ -187,7 +200,7 @@ class TestPane extends JLayeredPane {
 //            }
 //            y = yStart + yOffset * i;
 //            x += xOffset;
-//        }
+////        }
 //    }
 
 
@@ -195,5 +208,12 @@ class TestPane extends JLayeredPane {
     public Dimension getPreferredSize() {
         return new Dimension(300, 300);
     }
-
 }
+
+// if a button has not been pressed, mark it as selected
+
+// if another button has been pressed
+// try to move cards from the first button stack to the next button stack
+
+// you can move from discard pile to tableau, or foundation
+// you can move from tableau to tableau, or foundation

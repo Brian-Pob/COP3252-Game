@@ -81,7 +81,10 @@ public class Model {
         }
     }
 
-    public boolean isValidTableauMove(int tableauIndex, Card card){ // for single card
+    public boolean isValidTableauMove(int tableauIndex, Card card){
+        // for single card
+        // to be used when moving card from discard pile to tableau
+        // or foundation to tableau
         if(tableauIndex < 0 || tableauIndex > 6)
             return false;
         if(tableau[tableauIndex].isEmpty())
@@ -105,6 +108,7 @@ public class Model {
     }
 
     public boolean isValidFoundationMove(int foundationIndex, Card card){
+        // move single card from discard pile or tableau to foundation
         if(foundationIndex < 0 || foundationIndex > 3)
             return false;
         if(foundation[foundationIndex].isEmpty())
@@ -114,10 +118,15 @@ public class Model {
     }
 
     public Card drawCard(){ // when drawpile is clicked and is not empty, draw card
-        Card tempCard = drawPile.pop();
-        tempCard.setFaceUp(true);
-        discardPile.push(tempCard);
-        return tempCard;
+        if(!drawPile.isEmpty()) {
+            Card tempCard = drawPile.pop();
+            tempCard.setFaceUp(true);
+            discardPile.push(tempCard);
+            return tempCard;
+        }else {
+            resetDrawPile();
+            return drawCard();
+        }
     }
 
     public void resetDrawPile(){ // when drawpile is clocked and is empty, reset drawpile
@@ -127,6 +136,28 @@ public class Model {
                                               // will eventually set all cards face down
         }
     }
+
+    public void moveTableauToFoundation(int tableauIndex, int foundationIndex){
+        // move card from tableau to foundation
+        Card tempCard = tableau[tableauIndex].pop();
+        tempCard.setFaceUp(true);
+        foundation[foundationIndex].push(tempCard);
+    }
+
+    public void moveDiscardToFoundation(int foundationIndex){
+        // move card from discard pile to foundation
+        Card tempCard = discardPile.pop();
+        tempCard.setFaceUp(true);
+        foundation[foundationIndex].push(tempCard);
+    }
+
+    public void moveDiscardToTableau(int tableauIndex){
+        // move card from discard pile to tableau
+        Card tempCard = discardPile.pop();
+        tempCard.setFaceUp(true);
+        tableau[tableauIndex].push(tempCard);
+    }
+
 
     public Stack<Card>[] getFoundation() {
         return foundation;
