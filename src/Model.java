@@ -125,12 +125,20 @@ public class Model {
             return tempCard;
         }else {
             resetDrawPile();
-            return drawCard();
+            return null;
         }
     }
 
-    public void resetDrawPile(){ // when drawpile is clocked and is empty, reset drawpile
-        for (int i = 0; i < discardPile.size(); i++) {
+    public Card peekCard() {
+        if(!drawPile.isEmpty()) {
+            return drawPile.peek();
+        } else {
+            return null;
+        }
+    }
+
+    public void resetDrawPile(){ // when drawpile is clicked and is empty, reset drawpile
+        while(!discardPile.isEmpty()) {
             drawPile.push(discardPile.pop()); // moves all cards from discard pile to draw pile
             drawPile.peek().setFaceUp(false); // sets the top card of the draw pile face down
                                               // will eventually set all cards face down

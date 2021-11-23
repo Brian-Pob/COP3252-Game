@@ -7,14 +7,15 @@ import java.util.Stack;
 public class View extends JFrame{
     public static final Color VERY_DARK_GREEN = new Color(0, 102, 0);
     private final Model gameModel;
+    private TestPane tp;
 
     public View(Model gameModel) {
         this.gameModel = gameModel;
     }
 
     public void initializeGame() {
+        this.tp = new TestPane(gameModel);
         JFrame frame = new JFrame("Klondike Solitaire");
-        TestPane tp = new TestPane(gameModel);
 
         frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
         frame.setExtendedState(JFrame.MAXIMIZED_BOTH); // uncomment to make the window fullscreen
@@ -24,29 +25,14 @@ public class View extends JFrame{
         JPanel panel = new JPanel();
         JButton newGame = new JButton("New Game");
         JButton undo = new JButton("Undo");
-        JButton drawCard = new JButton("Draw Card");
-        drawCard.addActionListener(e -> {
-            gameModel.drawCard();
-            System.out.println("\nDiscard Pile");
-            for (Card c: gameModel.getDiscardPile()) {
-                System.out.println(c);
-            }
-
-            System.out.println("\nDraw Pile");
-            for (Card c: gameModel.getDrawPile()) {
-                System.out.println(c);
-            }
-        });
-        JButton[] tableau = new JButton[7];
 
         panel.add(newGame); // Components Added using Flow Layout
         panel.add(undo);
-        panel.add(drawCard);
 
         createButtons(gameModel, frame, 25, 275, 202, 175, 500, 7, 't'); //create tableau buttons
         createButtons(gameModel, frame, 25, 75, 150, 150, 200, 4, 'f'); //create foundation buttons
         createButtons(gameModel, frame, 1100, 75, 150, 150, 200, 1, 'i'); //create draw/discard buttons
-        createButtons(gameModel, frame, 1250, 75, 150, 150, 200, 1, 'd'); //create draw/discard buttons
+        createButtons(gameModel, frame, 1250, 75, 150, 150, 200, 1, 'd'); //create draw buttons
 
         // Text Area at the Center
         frame.getContentPane().setBackground(VERY_DARK_GREEN);
@@ -65,13 +51,18 @@ public class View extends JFrame{
             switch (btnType) {
                 case 'd':
                     jButton.addActionListener(e -> {
-                        Card tempCard = gameModel.drawCard();
+                        Card tempCard = gameModel.peekCard();
+                        Card tempCard2 = gameModel.drawCard();
                         JLayeredPane lpane = getLayeredPane();
-                        Stack<Card> tempDiscardPile = gameModel.getDiscardPile();
                         int yStarttemp = 65, xStarttemp = 1125;
-                            try {
-                                System.out.println("Inside try");
-                                ImageIcon imageIcon = tempCard.getCardImage();
+//                        tp.addingDraw(gameModel);
+                        try {
+                            System.out.println("Inside try");
+                            if (tempCard == null) {
+                                tp.removeDrawCard();
+                            } else {
+                                tp.addDrawCard();
+                                ImageIcon imageIcon = tempCard2.getCardImage();
                                 Image image = imageIcon.getImage();
                                 Image newimg = image.getScaledInstance(100, 150, Image.SCALE_SMOOTH);
                                 imageIcon = new ImageIcon(newimg);
@@ -82,10 +73,13 @@ public class View extends JFrame{
                                 lpane.setVisible(true);
                                 frame.getContentPane().add(lpane);
                                 frame.setVisible(true);
-                            } catch (Exception exp) {
-                                exp.printStackTrace();
                             }
+                        } catch (Exception exp) {
+                            exp.printStackTrace();
+                        }
                     });
+                    break;
+                case 'i':
                     break;
                 case 'f':
                     break;
@@ -105,38 +99,43 @@ public class View extends JFrame{
 }
 
 class TestPane extends JLayeredPane {
+    private JLabel drawCardLabel;
     public TestPane(Model gameModel) {
+//        this.drawCardLabel = new JLabel();
         addingTableau(gameModel);
 //        addingFoundation(gameModel);
         addingDraw(gameModel);
     }
 
-    private void addingDraw(Model gameModel) {
+    public void addingDraw(Model gameModel) {
         int yStart = 65, xStart = 1275;
         int yOffset = 0, xOffset = 2;
-
         int x = xStart, y = yStart - yOffset;
-            for (int j = gameModel.getDrawPile().size() - 1 ; j >= 0; j--) { // iterates through the stack
-                System.out.println(gameModel.getDrawPile().get(j) + " " + gameModel.getDrawPile().get(j).isFaceUp());
-                try {
-                    ImageIcon imageIcon = new ImageIcon(Objects.requireNonNull(this.getClass().getResource("back.png")));
-                    if (gameModel.getDrawPile().get(j).isFaceUp()) {
-                        imageIcon = gameModel.getDrawPile().get(j).getCardImage();
-                    }
-                    Image image = imageIcon.getImage();
-                    Image newimg = image.getScaledInstance(100, 150, Image.SCALE_SMOOTH);
-                    imageIcon = new ImageIcon(newimg);
-                    JLabel label = new JLabel(imageIcon);
-                    label.setSize(label.getPreferredSize());
-                    label.setLocation(x, y);
-                    add(label);
-//                    x += xOffset;
-                } catch (Exception exp) {
-                    exp.printStackTrace();
-                }
-                // put card behind the button
+        Card tempCard = gameModel.drawCard();
+        try {
+            ImageIcon imageIcon = new ImageIcon(Objects.requireNonNull(this.getClass().getResource("back.png")));
+            if (gameModel.getDrawPile().peek().isFaceUp()) {
+                imageIcon = gameModel.getDrawPile().peek().getCardImage();
             }
+            Image image = imageIcon.getImage();
+            Image newimg = image.getScaledInstance(100, 150, Image.SCALE_SMOOTH);
+            imageIcon = new ImageIcon(newimg);
+            drawCardLabel = new JLabel(imageIcon);
+            drawCardLabel.setSize(drawCardLabel.getPreferredSize());
+            drawCardLabel.setLocation(x, y);
+            add(drawCardLabel);
+        } catch (Exception exp) {
+            exp.printStackTrace();
         }
+    }
+
+    void removeDrawCard() {
+        this.remove(drawCardLabel);
+    }
+
+    void addDrawCard() {
+        this.add(drawCardLabel, 0);
+    }
 
     void addingTableau(Model gameModel) {
         int yStart = 275, xStart = 75;
