@@ -1,4 +1,3 @@
-# COP3252-Game
 
 # Klondike Solitaire Game
 
