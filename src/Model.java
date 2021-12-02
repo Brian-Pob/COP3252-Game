@@ -132,7 +132,7 @@ public class Model {
         if(foundation[foundationIndex].isEmpty())
             return card.getCardRank() == EnumRank.ACE;
         Card topCard = foundation[foundationIndex].peek();
-        return (topCard.getCardColor() != card.getCardColor()) && (topCard.getCardRank().getRankValue() == card.getCardRank().getRankValue() - 1);
+        return (topCard.getCardSuit() == card.getCardSuit()) && (topCard.getCardRank().getRankValue() + 1 == card.getCardRank().getRankValue());
     }
 
     public Card drawCard(){ // when drawpile is clicked and is not empty, draw card
@@ -182,12 +182,15 @@ public class Model {
         // move all valid cards from tableau stack to tableau
         int numCards = isValidTableauStackMove(tableauIndex1, tableauIndex2);
         Stack<Card> tempStack = new Stack<>();
+        System.out.println("numCards: " + numCards);
         if(numCards == -1)
             return;
-        for (int i = 0; i < numCards; i++) {
-            Card tempCard = tableau[tableauIndex1].pop();
-            tempCard.setFaceUp(true);
-            tempStack.push(tempCard);
+        for (int i = 0; i <= numCards; i++) {
+            Card tempCard = tableau[tableauIndex1].peek();
+            if(tempCard.isFaceUp())
+                tempStack.push(tableau[tableauIndex1].pop());
+            else
+                break;
         }
         while(!tempStack.isEmpty()) {
             tableau[tableauIndex2].push(tempStack.pop());

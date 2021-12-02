@@ -38,20 +38,29 @@ public class Controller {
         }
         else if (buttonPressCounter % 2 == 0){
             secondTableauButton = index;
-            if(model.isValidTableauStackMove(firstTableauButton, secondTableauButton) != -1) {
-               for (int i = 0; i <= model.isValidTableauStackMove(firstTableauButton, secondTableauButton); i++) {
-                   model.moveTableauStackToTableau(firstTableauButton, secondTableauButton);
-                   model.getTableau()[firstTableauButton].get(model.getTableau()[firstTableauButton].size() - 1).setFaceUp(true);
-               }
-            }else {
-                System.out.println("Invalid move");
+            if(firstTableauButton != -1 && secondTableauButton != -1) {
+                System.out.println("both buttons pressed");
+                if (model.isValidTableauStackMove(firstTableauButton, secondTableauButton) != -1) {
+                    System.out.println("valid move: " + model.isValidTableauStackMove(firstTableauButton, secondTableauButton));
+                    for (int i = 0; i < model.isValidTableauStackMove(firstTableauButton, secondTableauButton); i++) {
+                        model.moveTableauStackToTableau(firstTableauButton, secondTableauButton);
+                        model.getTableau()[firstTableauButton].get(model.getTableau()[firstTableauButton].size() - 1).setFaceUp(true);
+                    }
+                } else {
+                    System.out.println("Invalid move");
+                }
+            }else if(discardPressed == 1){
+                System.out.println("discard pressed");
+                if(model.isValidTableauMove(index, model.getDiscardPileTop())){
+                    model.moveDiscardToTableau(index);
+                }
             }
             firstTableauButton = -1;
             secondTableauButton = -1;
         }
 
 
-        model.printTableau();
+//        model.printTableau();
         view.updateView(model);
     }
 
@@ -77,8 +86,8 @@ public class Controller {
             }
         }
 
-        model.printDiscardPile();
-        model.printFoundation();
+//        model.printDiscardPile();
+//        model.printFoundation();
         view.updateView(model);
     }
 
