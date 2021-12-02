@@ -1,6 +1,8 @@
 
 # Klondike Solitaire Game
 
+Written using Java and Java Swing
+
 ## THE PACK
 The standard 52-card pack is used.
 ## OBJECT OF THE GAME
