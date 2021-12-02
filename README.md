@@ -1,15 +1,15 @@
 # COP3252-Game
 
-#Klondike Solitaire Game
+# Klondike Solitaire Game
 
-##THE PACK
+## THE PACK
 The standard 52-card pack is used.
-##OBJECT OF THE GAME
+## OBJECT OF THE GAME
 The goal is to get the four suits built onto the foundations from aces up through kings.
-##THE DEAL
+## THE DEAL
 Deal out 28 cards in seven piles as follows: The first pile is one card; the second pile has two cards, and so on up to seven in the
 last pile. The top card of each pile is face up; all others are face down.
-##THE PLAY
+## THE PLAY
 The four aces form the foundations. As it becomes available, each ace must be played to a row above the piles. Cards in the
 appropriate suit are then played on the aces in sequence - the two, then the three, and so on - as they become available.
 Any movable card may be placed on a card next-higher in rank if it is of opposite color. Example: A black five may be played on a
