@@ -38,14 +38,15 @@ public class Controller {
         }
         else if (buttonPressCounter % 2 == 0){
             secondTableauButton = index;
+            System.out.println("second tableau button pressed");
             if(firstTableauButton != -1 && secondTableauButton != -1) {
                 System.out.println("both buttons pressed");
                 if (model.isValidTableauStackMove(firstTableauButton, secondTableauButton) != -1) {
                     System.out.println("valid move: " + model.isValidTableauStackMove(firstTableauButton, secondTableauButton));
-                    for (int i = 0; i < model.isValidTableauStackMove(firstTableauButton, secondTableauButton); i++) {
+//                    for (int i = 0; i < model.isValidTableauStackMove(firstTableauButton, secondTableauButton); i++) {
                         model.moveTableauStackToTableau(firstTableauButton, secondTableauButton);
                         model.getTableau()[firstTableauButton].get(model.getTableau()[firstTableauButton].size() - 1).setFaceUp(true);
-                    }
+//                    }
                 } else {
                     System.out.println("Invalid move");
                 }

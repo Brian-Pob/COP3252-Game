@@ -117,9 +117,17 @@ public class Model {
     }
 
     public int isValidTableauStackMove(int tableauIndex1,int tableauIndex2){
-        for (int i = 0; i < tableau[tableauIndex1].size(); i++) {
+//        for (int i = 0; i < tableau[tableauIndex1].size(); i++) {
+//            System.out.println("Checking " + tableau[tableauIndex1].get(i));
+//            if(isValidTableauMove(tableauIndex2, tableau[tableauIndex1].get(i)))
+//                return i;
+//        }
+        int count = 0;
+        for (int i = tableau[tableauIndex1].size()-1; i >= 0; i--, count++) {
+            System.out.println("Checking " + tableau[tableauIndex1].get(i));
             if(isValidTableauMove(tableauIndex2, tableau[tableauIndex1].get(i)))
-                return i;
+                return count;
+
         }
 
         return -1;
