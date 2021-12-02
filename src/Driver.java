@@ -3,8 +3,8 @@ public class Driver {
         Model gameModel = new Model();
         View gameView = new View(gameModel);
         Controller gameController = new Controller(gameModel, gameView);
+        gameView.addController(gameController);
 
         gameController.initializeGame();
-//        gameController.testCount();
     }
 }

@@ -81,6 +81,15 @@ public class Model {
         }
     }
 
+    public void printTableau(){
+        for (int i = 0; i < tableau.length; i++) {
+            System.out.println("Stack " + i + ": " + tableau[i].size());
+            for (Card c: tableau[i]) {
+                System.out.println(c);
+            }
+        }
+    }
+
     public boolean isValidTableauMove(int tableauIndex, Card card){
         // for single card
         // to be used when moving card from discard pile to tableau
@@ -107,6 +116,15 @@ public class Model {
         return -1;
     }
 
+    public int isValidTableauStackMove(int tableauIndex1,int tableauIndex2){
+        for (int i = 0; i < tableau[tableauIndex1].size(); i++) {
+            if(isValidTableauMove(tableauIndex2, tableau[tableauIndex1].get(i)))
+                return i;
+        }
+
+        return -1;
+    }
+
     public boolean isValidFoundationMove(int foundationIndex, Card card){
         // move single card from discard pile or tableau to foundation
         if(foundationIndex < 0 || foundationIndex > 3)
@@ -129,9 +147,17 @@ public class Model {
         }
     }
 
-    public Card peekCard() {
+    public Card peekDrawPileCard() {
         if(!drawPile.isEmpty()) {
             return drawPile.peek();
+        } else {
+            return null;
+        }
+    }
+
+    public Card peekDiscardPileCard() {
+        if(!discardPile.isEmpty()) {
+            return discardPile.peek();
         } else {
             return null;
         }
@@ -150,6 +176,22 @@ public class Model {
         Card tempCard = tableau[tableauIndex].pop();
         tempCard.setFaceUp(true);
         foundation[foundationIndex].push(tempCard);
+    }
+
+    public void moveTableauStackToTableau(int tableauIndex1, int tableauIndex2){
+        // move all valid cards from tableau stack to tableau
+        int numCards = isValidTableauStackMove(tableauIndex1, tableauIndex2);
+        Stack<Card> tempStack = new Stack<>();
+        if(numCards == -1)
+            return;
+        for (int i = 0; i < numCards; i++) {
+            Card tempCard = tableau[tableauIndex1].pop();
+            tempCard.setFaceUp(true);
+            tempStack.push(tempCard);
+        }
+        while(!tempStack.isEmpty()) {
+            tableau[tableauIndex2].push(tempStack.pop());
+        }
     }
 
     public void moveDiscardToFoundation(int foundationIndex){
@@ -214,5 +256,23 @@ public class Model {
                 return false;
         }
         return true;
+    }
+
+    public void printDiscardPile() {
+        System.out.println("Discard Pile: ");
+        for(Card c : discardPile) {
+            System.out.println(c.getCardRank() + " of " + c.getCardSuit());
+        }
+    }
+
+    public void printFoundation() {
+        System.out.println("Foundation: ");
+        for(int i = 0; i < foundation.length; i++) {
+            if(!foundation[i].isEmpty()) {
+                System.out.println(foundation[i].peek().getCardRank() + " of " + foundation[i].peek().getCardSuit());
+            } else {
+                System.out.println("Empty");
+            }
+        }
     }
 }

@@ -7,10 +7,15 @@ import java.util.concurrent.atomic.AtomicInteger;
 public class View extends JFrame{
     public static final Color VERY_DARK_GREEN = new Color(0, 102, 0);
     private final Model gameModel;
+    private Controller gameController;
     private TestPane tp;
 
     public View(Model gameModel) {
         this.gameModel = gameModel;
+    }
+
+    public void addController(Controller controller) {
+        this.gameController = controller;
     }
 
     public void initializeGame() {
@@ -30,7 +35,7 @@ public class View extends JFrame{
         panel.add(undo);
 
         createButtons(gameModel, frame, 25, 275, 202, 175, 500, 7, 't'); //create tableau buttons
-        createButtons(gameModel, frame, 25, 75, 150, 150, 200, 4, 'f'); //create foundation buttons
+        createButtons(gameModel, frame, 25, 75, 202, 175, 200, 4, 'f'); //create foundation buttons
         createButtons(gameModel, frame, 1100, 75, 150, 150, 200, 1, 'i'); //create draw/discard buttons
         createButtons(gameModel, frame, 1250, 75, 150, 150, 200, 1, 'd'); //create draw buttons
 
@@ -47,16 +52,14 @@ public class View extends JFrame{
     void createButtons(Model gameModel ,JFrame frame, int x, int y, int xOffset, int width, int height, int numOfBtns, char btnType) {
         JButton[] btns = new JButton[numOfBtns];
         int tableauCounter = 0;
+        int foundationCounter = 0;
         AtomicInteger pressedCounter = new AtomicInteger();
         for (JButton jButton : btns) {
-            if (btnType == 't') {
-                tableauCounter++;
-            }
             jButton = new JButton("Button");
             switch (btnType) {
                 case 'd':
                     jButton.addActionListener(e -> {
-                        Card tempCard = gameModel.peekCard();
+                        Card tempCard = gameModel.peekDrawPileCard();
                         Card tempCard2 = gameModel.drawCard();
                         JLayeredPane lpane = getLayeredPane();
                         int yStarttemp = 65, xStarttemp = 1125;
@@ -82,32 +85,36 @@ public class View extends JFrame{
                         } catch (Exception exp) {
                             exp.printStackTrace();
                         }
-                        // increment pressedCounter
-                        pressedCounter.getAndIncrement();
-                        System.out.println("Pressed Counter: " + pressedCounter.get());
                     });
                     break;
                 case 'i':
+                    jButton.addActionListener(e -> {
+                        gameController.pressButton();
+                        gameController.pressDiscardButton();
+                    }
+                    );
                     break;
                 case 'f':
+                    int finalFoundationCounter = foundationCounter;
+                    jButton.addActionListener(e -> {
+                        int foundationID = finalFoundationCounter;
+                        gameController.pressButton();
+                        gameController.pressFoundationButton(foundationID);
+
+                    }
+                    );
+                    foundationCounter++;
                     break;
                 case 't':
                     int finalTableauCounter = tableauCounter;
                     jButton.addActionListener(e -> {
                         int tableauID = finalTableauCounter;
+                        gameController.pressButton();
+                        gameController.pressTableauButton(tableauID);
 
-
-
-                        if(pressedCounter.get() % 2 == 1) {
-                            pressedCounter.getAndIncrement();
-                            System.out.println("Pressed Counter: " + pressedCounter.get());
-                        }else{
-
-                            pressedCounter.getAndIncrement();
-                            System.out.println("Pressed Counter: " + pressedCounter.get());
-                        }
                     }
                     );
+                    tableauCounter++;
                     break;
             }
 
@@ -120,6 +127,9 @@ public class View extends JFrame{
             jButton.setCursor(Cursor.getPredefinedCursor(Cursor.HAND_CURSOR));
             x += xOffset;
         }
+    }
+    public void updateView(Model gameModel) {
+        tp.updateView(gameModel);
     }
 }
 
@@ -168,10 +178,10 @@ class TestPane extends JLayeredPane {
 
         int x = xStart, y = yStart - yOffset;
         for (int i = 0; i < gameModel.getTableau().length; i++) { // length of list of stacks
-            System.out.println("Stack " + Integer.toString(i));
+//            System.out.println("Stack " + Integer.toString(i));
             for (int j = gameModel.getTableau()[i].size() - 1 ; j >= 0; j--) { // iterates through the stack
 //            for (int j = 0; j < gameModel.getTableau()[i].size(); j++) {
-                System.out.println(gameModel.getTableau()[i].get(j) + " " + gameModel.getTableau()[i].get(j).isFaceUp());
+//                System.out.println(gameModel.getTableau()[i].get(j) + " " + gameModel.getTableau()[i].get(j).isFaceUp());
                 try {
                     ImageIcon imageIcon = new ImageIcon(Objects.requireNonNull(this.getClass().getResource("back.png")));
                     if (gameModel.getTableau()[i].get(j).isFaceUp()) {
@@ -196,38 +206,39 @@ class TestPane extends JLayeredPane {
         // Brian added a comment
     }
 
-
-//    void addingFoundation(Model gameModel) {
-//        int yStart = 75, xStart = 75;
-//        int yOffset = 25, xOffset = 200;
-//
-//        int x = xStart, y = yStart - yOffset;
-//        for (int i = 0; i < gameModel.getFoundation().length; i++) { // length of list of stacks
-//            System.out.println("Stack " + Integer.toString(i));
-//            for (int j = gameModel.getFoundation()[i].size() - 1; j >= 0; j--) { // iterates through the stack
-////            for (int j = 0; j < gameModel.getTableau()[i].size(); j++) {
-//                System.out.println(gameModel.getFoundation()[i].get(j) + " " + gameModel.getFoundation()[i].get(j).isFaceUp());
-//                try {
-//                    ImageIcon imageIcon = gameModel.getFoundation()[i].get(j).getCardImage();
-//                    Image image = imageIcon.getImage();
-//                    Image newimg = image.getScaledInstance(100, 150, java.awt.Image.SCALE_SMOOTH);
-//                    imageIcon = new ImageIcon(newimg);
-//                    JLabel label = new JLabel(imageIcon);
-//                    label.setSize(label.getPreferredSize());
-//                    label.setLocation(x, y);
-//                    add(label);
-//                    y -= yOffset;
-//                } catch (Exception exp) {
-//                    exp.printStackTrace();
-//                }
-//                // put card behind the button
-//            }
-//            y = yStart + yOffset * i;
-//            x += xOffset;
-////        }
-//    }
+    public void addingFoundation(Model gameModel) {
+        // createButtons(gameModel, frame, 25, 75, 202, 175, 200, 4, 'f'); //create foundation buttons
+        int yStart = 75, xStart = 75;
+        int xOffset = 202;
+        int x = xStart;
+        for(int i = 0; i < gameModel.getFoundation().length; i++) {
+            try {
+                ImageIcon imageIcon = new ImageIcon();
+                imageIcon = gameModel.getFoundation()[i].peek().getCardImage();
+                Image image = imageIcon.getImage();
+                Image newimg = image.getScaledInstance(100, 150, java.awt.Image.SCALE_SMOOTH);
+                imageIcon = new ImageIcon(newimg);
+                JLabel label = new JLabel(imageIcon);
+                label.setSize(label.getPreferredSize());
+                label.setLocation(x, yStart);
+                add(label);
+            } catch (Exception exp) {
+//                exp.printStackTrace();
+            }
+            x += xOffset;
+        }
+    }
 
 
+
+    public void updateView(Model gameModel) {
+        this.removeAll();
+        addingTableau(gameModel);
+        addingDraw(gameModel);
+        addingFoundation(gameModel);
+//        updateDiscard(gameModel);
+        repaint();
+    }
     @Override
     public Dimension getPreferredSize() {
         return new Dimension(300, 300);
