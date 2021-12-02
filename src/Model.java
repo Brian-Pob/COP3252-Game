@@ -166,6 +166,12 @@ public class Model {
         tableau[tableauIndex].push(tempCard);
     }
 
+    public void moveTableauToTableau(int fromTableauIndex, int toTableauIndex){
+        // move card from tableau to tableau
+        Card tempCard = tableau[fromTableauIndex].pop();
+        tempCard.setFaceUp(true);
+        tableau[toTableauIndex].push(tempCard);
+    }
 
     public Stack<Card>[] getFoundation() {
         return foundation;
@@ -200,5 +206,13 @@ public class Model {
 
     public List<Card> getMasterList() {
         return masterList;
+    }
+
+    public boolean hasWon(){
+        for(int i = 0; i < foundation.length; i++){
+            if(foundation[i].size() != 13)
+                return false;
+        }
+        return true;
     }
 }

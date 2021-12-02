@@ -1,7 +1,7 @@
 import javax.swing.*;
 import java.awt.*;
 import java.util.Objects;
-import java.util.Stack;
+import java.util.concurrent.atomic.AtomicInteger;
 
 
 public class View extends JFrame{
@@ -46,7 +46,12 @@ public class View extends JFrame{
 
     void createButtons(Model gameModel ,JFrame frame, int x, int y, int xOffset, int width, int height, int numOfBtns, char btnType) {
         JButton[] btns = new JButton[numOfBtns];
+        int tableauCounter = 0;
+        AtomicInteger pressedCounter = new AtomicInteger();
         for (JButton jButton : btns) {
+            if (btnType == 't') {
+                tableauCounter++;
+            }
             jButton = new JButton("Button");
             switch (btnType) {
                 case 'd':
@@ -77,6 +82,9 @@ public class View extends JFrame{
                         } catch (Exception exp) {
                             exp.printStackTrace();
                         }
+                        // increment pressedCounter
+                        pressedCounter.getAndIncrement();
+                        System.out.println("Pressed Counter: " + pressedCounter.get());
                     });
                     break;
                 case 'i':
@@ -84,8 +92,25 @@ public class View extends JFrame{
                 case 'f':
                     break;
                 case 't':
+                    int finalTableauCounter = tableauCounter;
+                    jButton.addActionListener(e -> {
+                        int tableauID = finalTableauCounter;
+
+
+
+                        if(pressedCounter.get() % 2 == 1) {
+                            pressedCounter.getAndIncrement();
+                            System.out.println("Pressed Counter: " + pressedCounter.get());
+                        }else{
+
+                            pressedCounter.getAndIncrement();
+                            System.out.println("Pressed Counter: " + pressedCounter.get());
+                        }
+                    }
+                    );
                     break;
             }
+
             jButton.setSize(width, height);
             jButton.setOpaque(false);
             jButton.setContentAreaFilled(false);
